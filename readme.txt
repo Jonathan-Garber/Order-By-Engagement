@@ -1,17 +1,15 @@
-﻿=== Plugin Name ===
+﻿=== Order By Engagement ===
 Author: TechStudio
-Contributors: 
+Contributors: Jonathan-Garber, ryan.burnette
 Donate link: http://techstudio.co/wordpress/plugins/order-by-engagement
-Tags: 
-Requires at least: 2.0.2
-Tested up to: 3.3.1
+Requires at least: 3.3.1
+Tested up to: 3.4.2
 Stable tag: 1.0.2
 
 Order By Engagement is a WordPress plugin designed to allow site admins to sort posts by a new factor: engagement. Engagement is defined by the plugin in three ways: landing on a post from another referring URI, engaging in any social media integrating on the site, or any other hook that calls the modify_engagement() function.
 
 
 == Description ==
-
 
 Order By Engagement is a WordPress plugin designed to allow site admins to sort posts by a new factor: engagement. Engagement is defined by the plugin in three ways: landing on a post from another referring URI, engaging in any social media integrating on the site, or any other hook that calls the modify_engagement() function. The plugin keeps track of engagement using custom post meta. Posts that then be looped in ascending or descending order using the get_engaged_posts() function to modify the main WordPress $post query. Imaging all the things you can do with posts in order by engagement. Have fun. :)
 
