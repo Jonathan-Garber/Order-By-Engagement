@@ -195,19 +195,16 @@ function add_engagement($post_ID) {
 function obe_update() {
 	$last_known_version = get_option('obe_version');
 	$current_version = obe_get_version();	
+	
+	//if versions are different we update version numbers and push update routines
 	if ( $last_known_version != $current_version ) {
 		update_option( "obe_version", $current_version );
 		obe_update_routine();
+	}else{
+		//version number was not different or did not even exist so we update just the version number variables
+		update_option( "obe_version", $current_version );
 	}
 	
-}
-
-function obe_get_version() {
-	if ( !function_exists('get_plugins') ) 
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		$plugin_folder = get_plugins( '/' . plugin_basename( dirname( __FILE__ ) ) );
-		$plugin_file = basename( ( __FILE__ ) );
-	return $plugin_folder[$plugin_file]['Version'];
 }
 
 function obe_getIP() { 

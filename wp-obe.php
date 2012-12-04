@@ -90,6 +90,11 @@ include 'pages/obe-settings.php';
 
 //runs on every wp-admin page load to check if our plugin is up to date
 add_action('admin_init','obe_update');
+function obe_get_version() {
+$plugin_data = get_plugin_data( __FILE__ );
+$plugin_version = $plugin_data['Version'];
+return $plugin_version;
+}
 
 //sets our custom hook in wp so we can use it when needed
 add_action('obecron','ocf');

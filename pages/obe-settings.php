@@ -61,7 +61,7 @@ if ($schedule == 'twicedaily'){
 }
 
 $schedule = ucfirst($schedule);
-	
+$last_known_version = get_option('obe_version');	
 ?>
 <div class="wrap">
 <h3>Current Rotation: <?php echo $schedule ?></h3>
@@ -106,4 +106,6 @@ $post_type = $cps->post_type;
 </select>
 <br/>
 <input type="submit" name="save_settings" value="Save Settings">
+<br/><br/>
+<small>Plugin Version: <?php echo $last_known_version ?></small>
 </div>
