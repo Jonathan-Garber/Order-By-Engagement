@@ -1,9 +1,8 @@
 <?php
 global $wpdb;
-	$table_name = $wpdb->prefix . 'obe_settings';
 	$posts_table = $wpdb->prefix . 'posts';
 	
-	$custom_posts = $wpdb->get_results("SELECT DISTINCT post_type FROM $posts_table WHERE post_type != 'page' AND post_type != 'revision' AND post_type != 'post'");
+	$custom_posts = $wpdb->get_results("SELECT DISTINCT post_type FROM $posts_table WHERE post_type != 'revision'");
 	
 	if (isset($_POST['save_settings'])){
 	$rotation = $_POST['rotation_period'];
@@ -26,38 +25,33 @@ global $wpdb;
 			schedule_obecron('twicedaily');
 			break;
 		}	
+			//build default settings array
+		$new_settings = array(
+			'rotation' => $rotation,
+			'dead_zone' => $dead_period,
+			'dead_factor' => $dead_factor,
+			'advance' => $advance,
+			'subtract' => $retreat,
+			'tracking' => $tracking,
+			'throttle' => $timeout
+			);
+		//update settings option with new default settings...
+		update_option('obe_settings', $new_settings);
 	
-	$track = '';
-		foreach ($tracking as $key=>$tr){
-			$track .= $tr.',';
-		}
-
-			$wpdb->get_results("UPDATE $table_name SET 
-			rotation_period='$rotation',
-			deaden_period='$dead_period',
-			deaden_factor='$dead_factor',
-			tracking='$track',
-			standard_advance='$advance',
-			standard_retreat='$retreat',
-			timeout='$timeout'
-			WHERE id = 1");				
+		
 }
 	
 	
 	
-	
-	$current_settings = $wpdb->get_results("SELECT * FROM $table_name");
-	foreach ($current_settings as $cs){}
-	$deaden_period = $cs->deaden_period;
-	$deaden_factor = $cs->deaden_factor;
-	$tracking = $cs->tracking;
-	
-	$tracking = explode(',',$tracking);
-	
-	$rotation_period = $cs->rotation_period;
-	$standard_retreat = $cs->standard_retreat;
-	$standard_advance = $cs->standard_advance;
-	$standard_timeout = $cs->timeout;
+	$obe_settings = get_option('obe_settings');
+
+	$deaden_period = $obe_settings[dead_zone];	
+	$deaden_factor = $obe_settings[dead_factor];
+	$tracking = $obe_settings[tracking];	
+	$rotation_period = $obe_settings[rotation];
+	$standard_retreat = $obe_settings[subtract];
+	$standard_advance = $obe_settings[advance];
+	$standard_timeout = $obe_settings[throttle];
 	
 
 $schedule = wp_get_schedule(obecron);
@@ -69,6 +63,7 @@ if ($schedule == 'twicedaily'){
 $schedule = ucfirst($schedule);
 	
 ?>
+<div class="wrap">
 <h3>Current Rotation: <?php echo $schedule ?></h3>
 <h4>Engage Settings</h4>
 <form method="POST">
@@ -111,3 +106,4 @@ $post_type = $cps->post_type;
 </select>
 <br/>
 <input type="submit" name="save_settings" value="Save Settings">
+</div>
