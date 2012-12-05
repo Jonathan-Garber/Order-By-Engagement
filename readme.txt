@@ -6,12 +6,14 @@ Requires at least: 3.3.1
 Tested up to: 3.4.2
 Stable tag: 1.1.0
 
-Order By Engagement is a WordPress plugin designed to allow site admins to sort posts by a new factor: engagement. Engagement is defined by the plugin in three ways: landing on a post from another referring URI, engaging in any social media integrating on the site, or any other hook that calls the modify_engagement() function.
+Order By Engagement is a WordPress plugin designed to allow theme developers to order posts by a value which corresponds to how engaged with a post users appear to be.
 
 
 == Description ==
 
-Order By Engagement is a WordPress plugin designed to allow site admins to sort posts by a new factor: engagement. Engagement is defined by the plugin in three ways: landing on a post from another referring URI, engaging in any social media integrating on the site, or any other hook that calls the modify_engagement() function. The plugin keeps track of engagement using custom post meta. Posts that then be looped in ascending or descending order using the get_engaged_posts() function to modify the main WordPress $post query. Imaging all the things you can do with posts in order by engagement. Have fun. :)
+Order By Engagement is a WordPress plugin designed to allow theme developers to order posts by a value which corresponds to how engaged with a post users appear to be.
+
+At the moment, OBE tracks engagement only be increasing a value, stored as a custom field value, when a corresponding post is accessed. Plugin settings allow administrators to throttle the increase of that value and to erode the current value over time. This is how the plugin tracks the maximum engagement value for a post and contrasts it with the current engagement value.
 
 
 == Installation ==
@@ -23,11 +25,8 @@ Order By Engagement is a WordPress plugin designed to allow site admins to sort 
 
 == Frequently Asked Questions ==
 
-Q: How do I set posts to be in order by the engagement factor?
-A: Ordering posts by engagement is no automatic. You must edit your theme to use the get_engaged_posts() function.
-
-
-== Screenshots ==
+Q: How do I display posts in order by their engagement values?
+A: Developers can utilize the WP_Query class in WordPress to sort posts by their engagement values. Check out [this OBE Wiki page](https://github.com/ryanburnette/Order-By-Engagement/wiki/Sort-WP_Query-By-Engagement) for more details.
 
 
 == Changelog ==
@@ -43,7 +42,3 @@ A: Ordering posts by engagement is no automatic. You must edit your theme to use
 
 = 1.0.0 =
 * Initial release
-
-
-== Upgrade Notice ==
-
