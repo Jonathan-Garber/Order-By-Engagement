@@ -1,10 +1,11 @@
 <?php
 
 /*
-	Plugin Name: Order By Engagement
-	Description: 
-	Version: 1.1.0
-	Author: TechStudio
+Plugin Name: Order By Engagement
+Description: Order By Engagement is a WordPress plugin designed to allow theme developers to order posts by a value which corresponds to how engaged with a post users appear to be.
+Version: 1.1.0
+Author: TechStudio
+Author URI: http://techstudio.co
 */
 require_once 'functions/functions.php';
 
