@@ -32,7 +32,9 @@ A: Developers can utilize the WP_Query class in WordPress to sort posts by their
 == Changelog ==
 
 = 1.1.0 =
-* Rewrote large portion of the plugin
+* The plugin now saves settings in a more modern way
+* Removed unnecessary functions
+* Improved documentation
 
 = 1.0.2 =
 * Minor cosmetic bug fix to prevent the spam dection from displaying its debug message
