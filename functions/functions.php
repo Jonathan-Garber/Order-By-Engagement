@@ -28,9 +28,7 @@ $timestamp = time();
 function modify_engagement($post_id,$amount,$operator,$key = 'current_engagement'){
 
 	$obe_settings = get_option('obe_settings');
-	$obe_ips = get_option('obe_ips');
-	
-	$post_id = get_the_Id();
+	$obe_ips = get_option('obe_ips');	
 	$post_type = get_post_type($post_id);	
 	$referer = $_SERVER['HTTP_REFERER'];
 	$url = site_url();
@@ -69,6 +67,7 @@ function modify_engagement($post_id,$amount,$operator,$key = 'current_engagement
 					'timestamp' => $timestamp
 					);
 		update_option('obe_ips', $obe_ips);
+		$ip_timestamp = $timestamp;
 	}
 	
 	if ($ip_timestamp){
@@ -79,13 +78,20 @@ function modify_engagement($post_id,$amount,$operator,$key = 'current_engagement
 			$obe_ips[$ip][post_type] = $post_type;
 			$obe_ips[$ip][date] = $date;
 			update_option('obe_ips', $obe_ips);	
-				if (in_array($post_type, $tracking) || in_array('all', $tracking)){
+			
+				if (in_array($post_type, $tracking) || in_array('all', $tracking)){				
 					update_post_meta($post_id, $key, $new_meta);		
 					update_post_meta($post_id, 'timestamp', $timestamp);
-				if ($max <= $current){
-					$new_max = $current + $standard_advance;
-					update_post_meta($post_id, 'max_engagement', $new_max);
+				
+				if ($max != ''){
+					if ($max <= $current){
+						$new_max = $current + $standard_advance;
+						update_post_meta($post_id, 'max_engagement', $new_max);
+					}
+				}else{
+					update_post_meta($post_id, 'max_engagement', $current);
 				}
+				
 				$new_current = get_post_meta($post_id, 'current_engagement', true);	
 					if ($new_current < 0){
 						update_post_meta($post_id, $key, 0);
@@ -112,6 +118,20 @@ function obe_is_single() {
 			$obe_settings = get_option('obe_settings');			
 			$standard_advance = $obe_settings[advance];
 			modify_engagement($post_id,$standard_advance,'+');
+		}
+}
+
+
+function obe_add_meta(){
+		if(is_single()) {
+			$post_id = get_the_Id();						
+			$path = plugins_url('ajax.js', __FILE__);
+			$plugin_url = plugins_url('process.php', __FILE__);
+?>			
+<meta name="post_id" value="<?php echo $post_id ?>">
+<meta name="plugin_url" value="<?php echo $plugin_url ?>">
+<script type='text/javascript' src='<?php echo $path ?>'></script>
+<?php			
 		}
 }
 

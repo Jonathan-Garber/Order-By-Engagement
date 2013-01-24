@@ -13,6 +13,9 @@ global $wpdb;
 	$tracking = $_POST['tracking'];
 	$timeout = $_POST['standard_timeout'];
 	
+	//new PHP or AJAX Setting for triggering engagement
+	$trigger = $_POST['trigger'];
+	
 	remove_obecron();
 	switch ($rotation) {
 		case 'daily':
@@ -33,11 +36,12 @@ global $wpdb;
 			'advance' => $advance,
 			'subtract' => $retreat,
 			'tracking' => $tracking,
-			'throttle' => $timeout
+			'throttle' => $timeout,
+			'trigger' =>  $trigger
 			);
 		//update settings option with new default settings...
 		update_option('obe_settings', $new_settings);
-	
+		$resp = 'Settings have been saved.';
 		
 }
 	
@@ -52,6 +56,7 @@ global $wpdb;
 	$standard_retreat = $obe_settings[subtract];
 	$standard_advance = $obe_settings[advance];
 	$standard_timeout = $obe_settings[throttle];
+	$trigger = $obe_settings[trigger];
 	
 
 $schedule = wp_get_schedule(obecron);
@@ -67,6 +72,11 @@ $last_known_version = get_option('obe_version');
 <h3>Current Rotation: <?php echo $schedule ?></h3>
 <h4>Engage Settings</h4>
 <form method="POST">
+Trigger Method: <select name="trigger">
+<option <?php if($trigger == 'ajax'){ echo 'selected="yes"'; } ?> value="ajax">Ajax</option>
+<option <?php if($trigger == 'php'){ echo 'selected="yes"'; } ?> value="php">PHP</option>
+</select><br/>
+
 Rotation Period: <select name="rotation_period">
 
 <option <?php if($rotation_period == 'hourly'){ echo 'selected="yes"'; } ?> value="hourly">Hourly</option>
@@ -107,5 +117,8 @@ $post_type = $cps->post_type;
 <br/>
 <input type="submit" name="save_settings" value="Save Settings">
 <br/><br/>
+<?php if ($resp) { ?>
+<strong>Settings Saved</strong><br/><br/>
+<?php } ?>
 <small>Plugin Version: <?php echo $last_known_version ?></small>
 </div>

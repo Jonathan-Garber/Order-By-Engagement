@@ -103,5 +103,15 @@ add_action('obecron','ocf');
 //adds engagement to any post the user edits thats supposed to be tracked and defaults to 0
 add_action('save_post', 'add_engagement'); 
 
-//when WP loads it fires the check to see if we are viewing a single page or post
-add_action('wp', 'obe_is_single');
+//get setting for what trigger type to use
+$obe_settings = get_option('obe_settings');
+$trigger = $obe_settings[trigger];
+if ($trigger == 'php'){
+	//when WP loads it fires the check to see if we are viewing a single page or post
+	//does not work with Caching because caching causes php not to run
+	add_action('wp', 'obe_is_single');
+}else{
+//adds post ID to html meta tags and if single adds jquery/javascript/ajax
+add_action('wp_head', 'obe_add_meta');
+}
+wp_enqueue_script("jquery");
