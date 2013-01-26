@@ -6,6 +6,10 @@ Order By Engagement is a WordPress plugin used for tracking engagement numbers b
 Version History
 ---------------
 
+### 1.2.0
+
++ Added PHP/Ajax trigger method choice for compatibility on cached sites
+
 ### 1.1.0
 
 + Jonathan rewrote a large portion of the plugin. This version mostly addressed issues #1-7.

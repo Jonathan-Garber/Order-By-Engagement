@@ -102,8 +102,8 @@ function modify_engagement($post_id,$amount,$operator,$key = 'current_engagement
 }
 	
 function obe_get_max($post_id){
-$current_max = get_post_meta($post_id, 'max_engagement', true);
-return $current_max;
+	$current_max = get_post_meta($post_id, 'max_engagement', true);
+	return $current_max;
 }
 
 /*
@@ -121,23 +121,31 @@ function obe_is_single() {
 		}
 }
 
+// Add required meta for Ajax trigger method
+function obe_add_meta() {
 
-function obe_add_meta(){
-		if(is_single()) {
-			$post_id = get_the_Id();						
-			$path = plugins_url('ajax.js', __FILE__);
-			$plugin_url = plugins_url('process.php', __FILE__);
-?>			
-<meta name="post_id" value="<?php echo $post_id ?>">
-<meta name="plugin_url" value="<?php echo $plugin_url ?>">
-<script type='text/javascript' src='<?php echo $path ?>'></script>
-<?php			
-		}
+	if ( is_single() ) {
+
+		$post_id = get_the_Id();						
+		$path = plugins_url('ajax.js', __FILE__);
+		$plugin_url = plugins_url('process.php', __FILE__);
+
+		// Print additional items to header
+		echo "\n<!-- OBE -->\n";
+		echo "<meta name=\"post_id\" value=\"$post_id\">\n";
+		echo "<meta name=\"plugin_url\" value=\"$plugin_url\">\n";
+		echo "<!-- /OBE -->\n\n";
+
+		// Add OBE Ajax script to footer
+		wp_register_script( "obe-ajax", $path, "jquery", NULL, TRUE );
+		wp_enqueue_script("obe-ajax");
+			
+	}
 }
 
 //help us obecron kenobi your our only hope...
 function schedule_obecron($when) {
-wp_schedule_event(time(), $when, 'obecron');
+	wp_schedule_event(time(), $when, 'obecron');
 }
 
 function remove_obecron() {
@@ -147,6 +155,7 @@ function remove_obecron() {
 
 //our obecron
 function ocf() {
+
 	global $wpdb;
 	$posts_table = $wpdb->prefix . "posts";
 	
@@ -161,58 +170,63 @@ function ocf() {
 
 	$current_posts = $wpdb->get_results("SELECT * FROM $posts_table");
 	
-		foreach ($current_posts as $cp){
+	foreach ($current_posts as $cp){
 		$post_id = $cp->ID;
 		$post_type = $cp->post_type;
 		$timestamp = get_post_meta($post_id, 'timestamp', true);
 		$engagement = get_post_meta($post_id, 'current_engagement', true);
-			if ($engagement <= $deadzone){
-			 $dead = 'yes';
-			}
-		
-			$current_time = time();
-			$current = get_post_meta($post_id, 'current_engagement', true);	
-		
-			if ($timestamp != ''){
-				if ($current_time > $timestamp){
-						if ($dead == 'yes'){
-							$new_meta = $current - $deaden_factor;
-							update_post_meta($post_id, 'current_engagement', $new_meta);
-							update_post_meta($post_id, 'timestamp', $current_time);							
-						}else{
-							$new_meta = $current - $standard_retreat;
-							update_post_meta($post_id, 'current_engagement', $new_meta);
-							update_post_meta($post_id, 'timestamp', $current_time);							
-						}
-						
-						$engagement = get_post_meta($post_id, 'current_engagement', true);
-						if ($engagement <= 0){	
-							update_post_meta($post_id, 'current_engagement', '0');
-						}
-					}
+		if ($engagement <= $deadzone) {
+			$dead = 'yes';
+		}
+
+		$current_time = time();
+		$current = get_post_meta($post_id, 'current_engagement', true);	
+
+		if ($timestamp != '') {
+			if ($current_time > $timestamp){ 
+				if ($dead == 'yes') {
+					$new_meta = $current - $deaden_factor;
+					update_post_meta($post_id, 'current_engagement', $new_meta);
+					update_post_meta($post_id, 'timestamp', $current_time);							
+				}
+				else {
+					$new_meta = $current - $standard_retreat;
+					update_post_meta($post_id, 'current_engagement', $new_meta);
+					update_post_meta($post_id, 'timestamp', $current_time);							
+				}
+
+				$engagement = get_post_meta($post_id, 'current_engagement', true);
+				if ($engagement <= 0) {	
+					update_post_meta($post_id, 'current_engagement', '0');
 				}
 			}
+		}
+	}
+
 }
 
 
 function add_engagement($post_ID) {
+
 	global $wpdb;
 
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE){
 		return $post_id;
 	}
-		$post_type = get_post_type($post_ID);
-		$obe_settings = get_option('obe_settings');
-		$tracking = $obe_settings[tracking];
-		if (in_array($post_type,$tracking) || in_array('all', $tracking)){
-			$engagement = get_post_meta($post_id, 'current_engagement', true);
-			if ($engagement == ''){
-				add_post_meta($post_ID, 'current_engagement', 0, true);
-			}
-		}	
+	$post_type = get_post_type($post_ID);
+	$obe_settings = get_option('obe_settings');
+	$tracking = $obe_settings[tracking];
+	if (in_array($post_type,$tracking) || in_array('all', $tracking)){
+		$engagement = get_post_meta($post_id, 'current_engagement', true);
+		if ($engagement == ''){
+			add_post_meta($post_ID, 'current_engagement', 0, true);
+		}
+	}
+
 }
 
 function obe_update() {
+
 	$last_known_version = get_option('obe_version');
 	$current_version = obe_get_version();	
 	
@@ -220,7 +234,8 @@ function obe_update() {
 	if ( $last_known_version != $current_version ) {
 		update_option( "obe_version", $current_version );
 		obe_update_routine();
-	}else{
+	}
+	else {
 		//version number was not different or did not even exist so we update just the version number variables
 		update_option( "obe_version", $current_version );
 	}

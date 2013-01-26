@@ -3,10 +3,10 @@ Author: TechStudio
 Contributors: Jonathan-Garber, ryan.burnette
 Donate link: http://techstudio.co/wordpress/plugins/order-by-engagement
 Requires at least: 3.3.1
-Tested up to: 3.4.2
-Stable tag: 1.1.0
+Tested up to: 3.5.1
+Stable tag: 1.2.0
 
-Order By Engagement is a WordPress plugin designed to allow theme developers to order posts by a value which corresponds to how engaged with a post users appear to be.
+Order By Engagement allows developers to track post engagement and sort by those tracked values.
 
 
 == Description ==
@@ -30,6 +30,9 @@ A: Developers can utilize the WP_Query class in WordPress to sort posts by their
 
 
 == Changelog ==
+
+= 1.2.0 =
+* OBE now uses either PHP or Ajax to function, this allows the plugin to work on sites cached by plugins such as W3 Total Cache
 
 = 1.1.0 =
 * The plugin now saves settings in a more modern way

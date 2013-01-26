@@ -2,28 +2,20 @@
 
 /*
 Plugin Name: Order By Engagement
-Description: Order By Engagement is a WordPress plugin designed to allow theme developers to order posts by a value which corresponds to how engaged with a post users appear to be.
-Version: 1.1.0
+Description: Order By Engagement allows developers to track post engagement and sort by those tracked values.
+Version: 1.2.0
 Author: TechStudio
 Author URI: http://techstudio.co
 */
-require_once 'functions/functions.php';
 
+include "functions/functions.php";
 
-/*
-The plugin checks versions on admin_init .. however if the update you released does not require any special function to run
-you simply leave the update_routine empty
-obe_update_routine will run anytime the version installed does not match the last version installed on site.
-*/
-function obe_update_routine(){
-/*
-leave empty unless this release actually has settings or variables to add/change
+function obe_update_routine() {
 
-The routine below is in place to ensure people who upgrade catch the new default settings
-*/
-$obe_settings = get_option('obe_settings');
-	if (empty($obe_settings)){
-		//build default settings array
+	$obe_settings = get_option('obe_settings');
+
+	if ( empty($obe_settings) ) {
+		// Build default settings array
 		$new_settings = array(
 			'rotation' => 'daily',
 			'dead_zone' => 20,
@@ -33,29 +25,27 @@ $obe_settings = get_option('obe_settings');
 			'tracking' => array('all'),
 			'throttle' => 30
 			);
-		//update settings option with new default settings...
+		// Update settings option with new default settings...
 		update_option('obe_settings', $new_settings);
 	}
 	
-global $wpdb;
+	global $wpdb;
 	$table_name = $wpdb->prefix . "obe_ips";
-   $sqldrop = "DROP TABLE IF EXISTS $table_name";
-   $results = $wpdb->query( $sqldrop );
+	$sqldrop = "DROP TABLE IF EXISTS $table_name";
+	$results = $wpdb->query( $sqldrop );
 
 	$table_name = $wpdb->prefix . "obe_settings";
-   $sqldrop = "DROP TABLE IF EXISTS $table_name";
-   $results = $wpdb->query( $sqldrop );   	
-	
+	$sqldrop = "DROP TABLE IF EXISTS $table_name";
+	$results = $wpdb->query( $sqldrop ); 
 	
 }
 
-
-
 function obe_installer() {
-//get current settings
-$obe_settings = get_option('obe_settings');
+
+	// Get current settings
+	$obe_settings = get_option('obe_settings');
 	
-	//current settings are empty so we add defaults
+	// Current settings are empty so we add defaults
 	if (empty($obe_settings)){
 		//build default settings array
 		$new_settings = array(
@@ -70,11 +60,12 @@ $obe_settings = get_option('obe_settings');
 		//update settings option with new default settings...
 		update_option('obe_settings', $new_settings);
 	}
+
 }
 
 function obe_uninstall() {
-delete_option('obe_settings');
-delete_option('obe_ips');
+	delete_option('obe_settings');
+	delete_option('obe_ips');
 }
 
 register_activation_hook( __FILE__, 'obe_installer' );
@@ -83,35 +74,36 @@ add_action('admin_menu', 'obe_plugin_menu');
 
 function obe_plugin_menu() {
 	add_menu_page('Engagement', 'Engagement', 8, __FILE__, obe_sub_menu_settings);
-} //END Plugin Menu
+}
 
 function obe_sub_menu_settings(){
-include 'pages/obe-settings.php';
+	include "pages/obe-settings.php";
 }
 
-//runs on every wp-admin page load to check if our plugin is up to date
-add_action('admin_init','obe_update');
+// Runs on every wp-admin page load to check if our plugin is up to date
+
 function obe_get_version() {
-$plugin_data = get_plugin_data( __FILE__ );
-$plugin_version = $plugin_data['Version'];
-return $plugin_version;
+	$plugin_data = get_plugin_data( __FILE__ );
+	$plugin_version = $plugin_data['Version'];
+	return $plugin_version;
 }
+add_action('admin_init','obe_update');
 
-//sets our custom hook in wp so we can use it when needed
+// Sets our custom hook in wp so we can use it when needed
 add_action('obecron','ocf');
 
-//adds engagement to any post the user edits thats supposed to be tracked and defaults to 0
+// Adds engagement to any post the user edits thats supposed to be tracked and defaults to 0
 add_action('save_post', 'add_engagement'); 
 
-//get setting for what trigger type to use
+// Get setting for what trigger type to use
 $obe_settings = get_option('obe_settings');
 $trigger = $obe_settings[trigger];
-if ($trigger == 'php'){
+if ( $trigger == 'php' ) {
 	//when WP loads it fires the check to see if we are viewing a single page or post
 	//does not work with Caching because caching causes php not to run
 	add_action('wp', 'obe_is_single');
-}else{
-//adds post ID to html meta tags and if single adds jquery/javascript/ajax
-add_action('wp_head', 'obe_add_meta');
 }
-wp_enqueue_script("jquery");
+else {
+	// Adds post ID to html meta tags and if single adds jquery/javascript/ajax
+	add_action('wp_head', 'obe_add_meta');
+}
